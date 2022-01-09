@@ -3,10 +3,17 @@ from tkinter import *
 import json
 from difflib import get_close_matches
 from tkinter import messagebox
+import pyttsx3
+
+# Creating instance of Engine Class
+engine = pyttsx3.init()
+voice = engine.getProperty('voices')
+engine.setProperty('voice', voice[0].id)
 
 
 # --------------------------------  Functionality Part  --------------------------------
 
+# define search function
 def search():
     textArea.delete(0.0, END)
     data = json.load(open('data.json'))
@@ -33,6 +40,29 @@ def search():
         enterWordEntry.delete(0, END)
 
 
+# define clear function
+def clear():
+    enterWordEntry.delete(0, END)
+    textArea.delete(0.0, END)
+
+
+# define exit function
+def iexit():
+    if messagebox.askyesno('Confirm', 'Do you want to exit?'):
+        root.destroy()
+    else:
+        pass
+
+
+# define audio function
+def wordAudio():
+    engine.say(enterWordEntry.get())
+    engine.runAndWait()
+
+# define audio function for text area
+def wordAudioTextArea():
+    engine.say(textArea.get(0.0, END))
+    engine.runAndWait()
 # --------------------------------  GUI Part  --------------------------------
 # To Create a window using tkinter we need to make an object
 root = Tk()
@@ -70,7 +100,7 @@ searchBtn.place(x=620, y=150)
 # Create mic Button
 micImg = PhotoImage(file='images/mic.png')
 micBtn = Button(root, text='Click to Speak', background='whitesmoke', border=1.25, cursor='hand2',
-                activebackground='whitesmoke', height=1)
+                activebackground='whitesmoke', height=1, command=wordAudio)
 micBtn.place(x=700, y=150)
 
 # Create Meaning Label
@@ -83,20 +113,20 @@ textArea.place(x=480, y=300)
 
 # Create mic Button
 searchImg = PhotoImage(file='images/search.png')
-searchBtn = Button(root, text="Search ", background='whitesmoke', border=1.25, height=1, width=7, cursor="hand2",
-                   activebackground="whitesmoke")
+searchBtn = Button(root, text="Click to speak ", background='whitesmoke', border=1.25, height=1, width=7, cursor="hand2",
+                   activebackground="whitesmoke", command=wordAudioTextArea)
 searchBtn.place(x=550, y=580)
 
 # Create Clear Button
 searchImg = PhotoImage(file='images/clear.png')
 searchBtn = Button(root, text="Clear ", background='whitesmoke', border=1.25, height=1, width=7, cursor="hand2",
-                   activebackground="whitesmoke")
+                   activebackground="whitesmoke", command=clear)
 searchBtn.place(x=680, y=580)
 
 # Create Exit Button
 searchImg = PhotoImage(file='images/exit.png')
 searchBtn = Button(root, text="Exit ", background='whitesmoke', border=1.25, height=1, width=7, cursor="hand2",
-                   activebackground="whitesmoke")
+                   activebackground="whitesmoke", command=iexit)
 searchBtn.place(x=810, y=580)
 
 
